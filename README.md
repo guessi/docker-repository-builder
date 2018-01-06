@@ -1,39 +1,49 @@
-Setup Guide for Building Local Repository
------------------------------------------
+# Dockerized Repository Builder
 
-### Server Side Configuration
+[![Docker Stars](https://img.shields.io/docker/stars/guessi/docker-repository-builder.svg)](https://hub.docker.com/r/guessi/docker-repository-builder/)
+[![Docker Pulls](https://img.shields.io/docker/pulls/guessi/docker-repository-builder.svg)](https://hub.docker.com/r/guessi/docker-repository-builder/)
+[![Docker Automated](https://img.shields.io/docker/automated/guessi/docker-repository-builder.svg)](https://hub.docker.com/r/guessi/docker-repository-builder/)
 
-Preparation - Docker image for repository construction
 
-    $ sudo docker build -t repo_builder .
+## Why...?
 
-      OR
+For developing purpose, or testing purpose, it might need to keep old-version,
+but upstream packages provider might removed them, that would become a problem,
+so building up a local repository for providing old-version would be required.
 
-    $ sudo docker build --no-cache -t repo_builder .  ### RECOMMEND ###
 
-Cleanup obsoleted packages before start
-
-    $ sudo rm -iv repo/*
+## Usage
 
 Repository construction in Docker container
 
-    $ sudo docker run --rm -v $(pwd)/repo:/repo:rw -i -t repo_builder "<package_list_here>"
+    $ docker run --rm --privileged=true                   \
+        -v $(pwd)/repo:/repo:rw                           \
+        -i -t guessi/docker-repository-builder            \
+        "bash"                       # NOTE: DO NOT remove double quotes
 
-check if the repository for the target packages is generated
+check the repository generated
 
     $ ls -l $(pwd)/repo/
-    -rw-r--r-- 1 root root 575658 Oct  9  2014 bash_4.3-7ubuntu1.5_amd64.deb
-    -rw-r--r-- 1 root root   2638 Aug 22 16:19 Packages
-    -rw-r--r-- 1 root root   1401 Aug 22 16:19 Packages.gz
-    -rw-r--r-- 1 root root 391240 Jan  3  2014 vim-tiny_2%3a7.4.052-1ubuntu3_amd64.deb
+    -rw-r--r-- 1 guessi guessi 574740 May 18  2017 bash_4.3-7ubuntu1.7_amd64.deb
+    -rw-r--r-- 1 guessi guessi   1327 Jan  6 13:10 Packages
+    -rw-r--r-- 1 guessi guessi    824 Jan  6 13:10 Packages.gz
+
+backup old repository
+
+    $ sudo mv /var/www/html/repo/ /var/www/html/repo.old/
 
 put the repository file to www service directory
 
-    $ sudo cp -f repo/* /var/www/html/repo/
+    $ sudo mkdir -p /var/www/html/repo/
+    $ sudo cp -rf repo/* /var/www/html/repo/
+
+setup nginx/apache
+
+    $ vim /etc/httpd/conf.d/repo.conf
 
 
-### Client Side Configuration
+## Client Side Configuration
 
-    $ echo 'deb http://repo-server.domain/repo /' | tee /etc/apt/sources.list.d/myrepo.list
-    $ sudo apt-get clean && sudo apt-get update
-    $ sudo apt-get install bash=4.3-7ubuntu1.5
+    $ echo 'deb http://repository.server/repo /' | sudo tee /etc/apt/sources.list.d/repo.list
+    $ sudo apt-get update
+    $ sudo apt-get install bash=4.3-7ubuntu1.7
