@@ -1,1 +1,1 @@
-Dockerfile.xenial
+Dockerfile.bionic
