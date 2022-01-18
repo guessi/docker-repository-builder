@@ -1,9 +1,5 @@
 # Dockerized Repository Builder
 
-[![Docker Stars](https://img.shields.io/docker/stars/guessi/docker-repository-builder.svg)](https://hub.docker.com/r/guessi/docker-repository-builder/)
-[![Docker Pulls](https://img.shields.io/docker/pulls/guessi/docker-repository-builder.svg)](https://hub.docker.com/r/guessi/docker-repository-builder/)
-[![Docker Automated](https://img.shields.io/docker/automated/guessi/docker-repository-builder.svg)](https://hub.docker.com/r/guessi/docker-repository-builder/)
-
 
 ## Why...?
 
