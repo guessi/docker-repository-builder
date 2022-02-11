@@ -17,11 +17,11 @@ rm -f ./*.deb ./Packages*
 echo
 
 echo "=> Updating repository..."
-apt-get -qq update
+apt update
 echo
 
 echo "=> Downloading packages and dependencies..."
-apt-get install --reinstall -s $@ | awk '/^Inst/{print$2}' | xargs -r apt-get download
+apt install --reinstall -s $@ | awk '/^Inst/{print$2}' | xargs -r apt download
 echo
 
 echo "=> Generating packages index files..."
